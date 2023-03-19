@@ -1,10 +1,11 @@
-import React, {useReducer} from "react";
-import { getAllSaveSessions, saveCurrentSessionThrottle } from './SessionStorage';
+import React, {useEffect, useReducer} from "react";
+import { getAllSaveSessions, saveCurrentSessionThrottle } from './SessionStorageServer';
 
 import { Chat } from './ChatBox'
 import { ConversationContext } from './Conversations';
 import { ConversationInf } from '../utils/Message';
 import { SideBar } from './SideBar'
+import { Toaster } from 'react-hot-toast';
 
 function sessionReducer(sessionList: ConversationInf[], action: {type: string, payload: ConversationInf}) {
     switch (action.type) {
@@ -33,12 +34,21 @@ function curIdxReducer(state:number, newIndex: number) {
 }
 
 export function MainFrame() {
-  const defaultSessions: ConversationInf[] = [{title: "Default", uniqueId:"Default", contents:[]}]
-  const [sessionList, setSessionList] = useReducer(sessionReducer, [], ()=> {
-    const savedSessions = getAllSaveSessions()
-    return savedSessions ? [...defaultSessions, ...savedSessions] : defaultSessions
-  })
+  const defaultSessions: ConversationInf[] = [{title: "Default", uniqueId:"Default", createTime: Date.now(), contents:[]}]
 
+  const [sessionList, setSessionList] = useReducer(sessionReducer, defaultSessions)
+
+  useEffect(() => {
+    getAllSaveSessions().then((resp) => {
+      // if savedSession is array and not empty
+      if (Array.isArray(resp?.sessions) && resp.sessions.length) {
+        resp.sessions.forEach((session: any) => {
+          setSessionList({type: 'add', payload: session})
+        })
+      }
+    });
+  }, []); // The empty array causes this effect to only run on mount
+  
   const [curSessionIdx, setCurSessionIdx] = useReducer(curIdxReducer, 0)
   return (    
     <div className="overflow-hidden w-full h-screen relative">
@@ -46,6 +56,7 @@ export function MainFrame() {
           <div className="flex h-full flex-1 flex-col md:pl-[260px]">
               <Chat />
           </div>
+          <div><Toaster/></div>
           <SideBar/>
         </ConversationContext.Provider>
     </div>

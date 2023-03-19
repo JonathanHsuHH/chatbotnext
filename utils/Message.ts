@@ -3,6 +3,7 @@ type ChatGPTAgent = 'user' | 'system' | 'assistant'
 export interface ConversationInf {
   title: string
   uniqueId: string
+  createTime: number
   contents: ChatGPTMessage[]
 }
 

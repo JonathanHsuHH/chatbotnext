@@ -1,5 +1,5 @@
 import { BiAperture, BiCheck, BiEdit, BiMessage, BiMinusCircle, BiPlusCircle, BiX } from "react-icons/bi";
-import { addToGptSessionList, removeCurrentSession, saveCurrentSession } from './SessionStorage';
+import { removeCurrentSession, saveCurrentSession } from './SessionStorageServer';
 import { useContext, useState } from 'react'
 
 import { ConversationContext } from './Conversations';
@@ -7,6 +7,8 @@ import { ConversationInf } from '../utils/Message';
 import EdiText from 'react-editext'
 import styled from 'styled-components';
 import tw from "tailwind-styled-components";
+
+// import { addToGptSessionList } from './SessionStorage';
 
 const StyledEdiText = styled(EdiText)`
   button[editext="edit-button"] {
@@ -51,22 +53,23 @@ export function SideBar() {
       const session = sessionList[index] as ConversationInf
       session.title = title
       setSessionList({type: 'modify', payload: session})
-      // edit from local storage
+      // edit session in server storage
       saveCurrentSession(session)
     };
 
     const onNewConversation = () => {
-        // save current session to local storage
-        console.log("Save current session to local storage...")
-        saveCurrentSession(sessionList[curSessionIdx])
-
+        // save current session to server storage
+        if (curSessionIdx > 0) {
+          console.log("Save current session to server storage...")
+          saveCurrentSession(sessionList[curSessionIdx])
+        }
         console.log("Creating a new conversation...")
         const uniqueId = Math.random().toString(36)
-        setSessionList({type: 'add', payload: {title: "Session", uniqueId, contents: []}})
+        setSessionList({type: 'add', payload: {title: "Session", uniqueId, createTime: Date.now(), contents: []}})
         setCurSessionIdx(curSessionIdx + 1)
 
         // add new session id to gptSessionList
-        addToGptSessionList(uniqueId)
+        // addToGptSessionList(uniqueId)
       };
 
     return (

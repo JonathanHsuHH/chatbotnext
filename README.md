@@ -7,6 +7,7 @@ Mirror site by openAI chat completion API, based on https://github.com/vercel/ex
 - Next.js
 - OpenAI API (ChatGPT) - streaming
 - API Routes (Edge runtime) - streaming
+- Redis - save sessions
 
 ## How to Use
 
@@ -19,6 +20,7 @@ cp .env.example .env.local
 ```
 
 then, update `OPENAI_API_KEY` with your [OpenAI](https://beta.openai.com/account/api-keys) secret key.
+update `REDIS_URL` with redis server, such as localhost:6379
 
 Next, run Next.js in development mode:
 

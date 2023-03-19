@@ -1,16 +1,19 @@
 import { type ChatGPTMessage } from '../../utils/Message'
 import { OpenAIStream, OpenAIStreamPayload } from '../../utils/OpenAIStream'
 
-// break the app if the API key is missing
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error('Missing Environment Variable OPENAI_API_KEY')
-}
 
 export const config = {
   runtime: 'edge',
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  // break if the API key is missing
+  if (!process.env.OPENAI_API_KEY) {
+    const options = { status: 500, statusText: "Config error" };
+    const resp = new Response('Missing Environment Variable OPENAI_API_KEY', options)
+    return resp
+  }
+
   const body = await req.json()
   const messages: ChatGPTMessage[] = [
     {

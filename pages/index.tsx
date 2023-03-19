@@ -1,6 +1,5 @@
-import React, {useReducer} from "react";
-
 import { MainFrame } from '../components/MainFrame'
+import React from "react";
 
 function Home() {
   return (

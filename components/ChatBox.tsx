@@ -5,6 +5,7 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { Button } from './Button'
 import { ConversationContext } from './Conversations';
 import { ConversationInf } from '../utils/Message';
+import toast from 'react-hot-toast'
 import { useCookies } from 'react-cookie'
 
 const COOKIE_NAME = 'ai-chat-gpt3'
@@ -60,12 +61,15 @@ const InputMessage = ({ input, setInput, sendMessage, regenerateResponse }: any)
 
 export function Chat() {
   const { sessionList, setSessionList, curSessionIdx, setCurSessionIdx } = useContext(ConversationContext)
-  const session = sessionList[curSessionIdx] as ConversationInf
-  const messages = session.contents
 
+  const session = sessionList[curSessionIdx] as ConversationInf
+  const sessionCnt = sessionList.length;
+  if (curSessionIdx >= sessionCnt) {
+    console.error(`Wrong curSessionIdx ${curSessionIdx} >= sessionCnt ${sessionCnt}`)
+  }
+  const messages = session?.contents
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState('')
-  const [errorMsg, setErrorMsg] = useState('')
   const [cookie, setCookie] = useCookies([COOKIE_NAME])
   const bottomRef = useRef<HTMLDivElement|null>(null)
 
@@ -80,7 +84,7 @@ export function Chat() {
   useEffect(() => {
     // scroll to bottom every time messages change
     bottomRef.current?.scrollIntoView({behavior: 'smooth'});
-  }, [messages, errorMsg]);
+  }, [messages, loading]);
 
   // send message to API /api/chat endpoint
   const sendMessage = async (message: string) => {
@@ -88,7 +92,6 @@ export function Chat() {
       return
     }
     setLoading('Loading...')
-    setErrorMsg('')
     const newMessages = [
       ...messages,
       { role: 'user', content: message } as ChatGPTMessage,
@@ -99,10 +102,11 @@ export function Chat() {
       session.uniqueId = uniqueId
       session.title = "Session"
       setSessionList({type: 'add', payload: session})
-      setCurSessionIdx(1)
+      setCurSessionIdx(sessionCnt)
     } else {
       setSessionList({type: 'modify', payload: session})
     }
+
     const last10messages = newMessages.slice(-10) // remember last 10 messages
     const response = await fetch('/api/chat', {
       method: 'POST',
@@ -146,16 +150,15 @@ export function Chat() {
       }
     }
     if (!response.ok) {
-      setErrorMsg(returnMessage)
+      toast.error(returnMessage)
     }
   }
 
   const regenerateResponse = async () => {
-    if (loading !== '' || messages.length < 2 || messages[-1].role !== 'assistant') {
+    if (loading !== '' || messages.length < 2 || messages[messages.length - 1]?.role !== 'assistant') {
       return
     }
     setLoading('Regenerating...')
-    setErrorMsg('')
     // remove last message
     const newMessages = messages.slice(0, -1)
     session.contents = newMessages
@@ -204,7 +207,7 @@ export function Chat() {
       }
     }
     if (!response.ok) {
-      setErrorMsg(returnMessage)
+      toast.error(returnMessage)
     }
   }
 
@@ -212,27 +215,26 @@ export function Chat() {
     <div className="relative h-full w-full overflow-hidden transition-width flex flex-col flex-1 items-center pb-28">
       <div className="flex flex-1 w-full overflow-y-auto justify-center">
         <div className="w-full lg:max-w-3xl p-3 md:h-full md:flex md:flex-col">
-          {messages.map(({ content, role }, index) => (
+          {messages?.map(({ content, role }, index) => (
             <ChatLine key={index} role={role} content={content} />
           ))}
-          {messages.length < 1 && (
+          {messages?.length < 1 && (
             <span className="mx-auto flex flex-grow text-gray-600 clear-both">
               Type a message to start the conversation
             </span>
           )}
+          {loading && <LoadingChatLine loadingMsg={loading}/>}
           <div className="w-full float-left clear-both" ref={bottomRef}></div>
-          {loading && <LoadingChatLine loadingMsg={loading} />}
-          {errorMsg && <ErrorMsgChatLine errorMsg={errorMsg} />}
         </div>
       </div>
-      <div className="absolute bottom-0 w-full p-3 lg:max-w-3xl">
+      {messages && <div className="absolute bottom-0 w-full p-3 lg:max-w-3xl">
         <InputMessage
             input={input}
             setInput={setInput}
             sendMessage={sendMessage}
             regenerateResponse={regenerateResponse}
           />
-      </div>
+      </div>}
     </div>
   )
 }
