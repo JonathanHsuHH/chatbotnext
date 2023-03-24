@@ -18,6 +18,9 @@ export async function getAllSaveSessions()
 
 export async function saveCurrentSession(curSession: ConversationInf)
 {
+    if (!process.env.REDIS_URL) {
+        return
+    }
     const res = await fetch('/api/updateSession', {
         body: JSON.stringify(curSession),
         headers: {
@@ -35,6 +38,9 @@ export async function saveCurrentSession(curSession: ConversationInf)
 
 export function saveCurrentSessionThrottle(curSession: ConversationInf)
 {
+    if (!process.env.REDIS_URL) {
+        return
+    }
     if(curSession && curSession.contents.length % 4 == 1) {
         saveCurrentSession(curSession)
     }
@@ -42,7 +48,9 @@ export function saveCurrentSessionThrottle(curSession: ConversationInf)
 
 export async function removeCurrentSession(uniqueId: string)
 {
-
+    if (!process.env.REDIS_URL) {
+        return
+    }
     const res = await fetch('/api/deleteSession', {
         body: JSON.stringify({uniqueId}),
         headers: {

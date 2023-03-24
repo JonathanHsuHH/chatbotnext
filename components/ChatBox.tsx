@@ -62,7 +62,7 @@ const InputMessage = ({ input, setInput, sendMessage, regenerateResponse }: any)
 export function Chat() {
   const { sessionList, setSessionList, curSessionIdx, setCurSessionIdx } = useContext(ConversationContext)
 
-  const session = sessionList[curSessionIdx] as ConversationInf
+  let session = sessionList[curSessionIdx] as ConversationInf
   const sessionCnt = sessionList.length;
   if (curSessionIdx >= sessionCnt) {
     console.error(`Wrong curSessionIdx ${curSessionIdx} >= sessionCnt ${sessionCnt}`)
@@ -83,7 +83,7 @@ export function Chat() {
 
   useEffect(() => {
     // scroll to bottom every time messages change
-    bottomRef.current?.scrollIntoView({behavior: 'smooth'});
+    bottomRef.current?.scrollIntoView({behavior: 'auto'});
   }, [messages, loading]);
 
   // send message to API /api/chat endpoint
@@ -96,14 +96,14 @@ export function Chat() {
       ...messages,
       { role: 'user', content: message } as ChatGPTMessage,
     ]
-    session.contents = newMessages
     if (curSessionIdx == 0) {
       const uniqueId = Math.random().toString(36)
-      session.uniqueId = uniqueId
-      session.title = "Session"
-      setSessionList({type: 'add', payload: session})
+      const newSession = {title: "Session", uniqueId, createTime: Date.now(), contents: newMessages}
+      setSessionList({type: 'add', payload: newSession})
       setCurSessionIdx(sessionCnt)
+      session = newSession
     } else {
+      session.contents = newMessages
       setSessionList({type: 'modify', payload: session})
     }
 

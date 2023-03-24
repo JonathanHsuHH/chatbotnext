@@ -65,11 +65,9 @@ export function SideBar() {
         }
         console.log("Creating a new conversation...")
         const uniqueId = Math.random().toString(36)
+        const lastIdx = sessionList.length
         setSessionList({type: 'add', payload: {title: "Session", uniqueId, createTime: Date.now(), contents: []}})
-        setCurSessionIdx(curSessionIdx + 1)
-
-        // add new session id to gptSessionList
-        // addToGptSessionList(uniqueId)
+        setCurSessionIdx(lastIdx)
       };
 
     return (
