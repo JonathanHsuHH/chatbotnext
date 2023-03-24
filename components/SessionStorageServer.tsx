@@ -1,6 +1,7 @@
 import { ConversationInf } from '../utils/Message'
 import toast from 'react-hot-toast'
 
+var bRedisInServer = false;
 export async function getAllSaveSessions()
 {
     const response = await fetch('/api/getAllSessions', {
@@ -10,6 +11,7 @@ export async function getAllSaveSessions()
         method: 'POST',
     })
     if (response.ok) {
+        bRedisInServer = true
         return await response.json()
     } else {
         toast.error(`Fail to get history sessions: ${response.status} ${response.statusText}`)
@@ -18,7 +20,7 @@ export async function getAllSaveSessions()
 
 export async function saveCurrentSession(curSession: ConversationInf)
 {
-    if (!process.env.REDIS_URL) {
+    if (!bRedisInServer) {
         return
     }
     const res = await fetch('/api/updateSession', {
@@ -38,7 +40,7 @@ export async function saveCurrentSession(curSession: ConversationInf)
 
 export function saveCurrentSessionThrottle(curSession: ConversationInf)
 {
-    if (!process.env.REDIS_URL) {
+    if (!bRedisInServer) {
         return
     }
     if(curSession && curSession.contents.length > 0) {
@@ -48,7 +50,7 @@ export function saveCurrentSessionThrottle(curSession: ConversationInf)
 
 export async function removeCurrentSession(uniqueId: string)
 {
-    if (!process.env.REDIS_URL) {
+    if (!bRedisInServer) {
         return
     }
     const res = await fetch('/api/deleteSession', {

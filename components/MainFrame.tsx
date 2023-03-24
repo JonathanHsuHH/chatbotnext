@@ -51,9 +51,9 @@ export function MainFrame() {
     getAllSaveSessions().then((resp) => {
       // if savedSession is array and not empty
       if (Array.isArray(resp?.sessions) && resp.sessions.length) {
-        resp.sessions.forEach((session: any) => {
-          setSessionList({type: 'add', payload: session})
-        })
+        for (var i = resp.sessions.length - 1; i >= 0; i--) {
+          setSessionList({type: 'add', payload: resp.sessions[i]})
+        }
       }
     });
   }, []); // The empty array causes this effect to only run on mount

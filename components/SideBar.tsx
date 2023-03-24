@@ -8,8 +8,6 @@ import EdiText from 'react-editext'
 import styled from 'styled-components';
 import tw from "tailwind-styled-components";
 
-// import { addToGptSessionList } from './SessionStorage';
-
 const StyledEdiText = styled(EdiText)`
   button[editext="edit-button"] {
     display: none;

@@ -1,6 +1,6 @@
 import Redis from 'ioredis'
 
-// break the app if the API key is missing
+// break the app if the no REDIS_URL
 if (!process.env.REDIS_URL) {
     throw new Error('Missing Environment Variable REDIS_URL')
 }
