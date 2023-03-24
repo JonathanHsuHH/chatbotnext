@@ -41,7 +41,7 @@ export function saveCurrentSessionThrottle(curSession: ConversationInf)
     if (!process.env.REDIS_URL) {
         return
     }
-    if(curSession && curSession.contents.length % 4 == 1) {
+    if(curSession && curSession.contents.length > 0) {
         saveCurrentSession(curSession)
     }
 }

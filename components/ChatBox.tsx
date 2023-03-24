@@ -146,7 +146,11 @@ export function Chat() {
           ...newMessages,
           { role: 'assistant', content: returnMessage } as ChatGPTMessage,
         ]
-        setSessionList({type: 'modify', payload: session})
+        if (done) {
+          setSessionList({type: 'modify', payload: session})
+        } else {
+          setSessionList({type: 'responding', payload: session})
+        }
       }
     }
     if (!response.ok) {
@@ -203,7 +207,11 @@ export function Chat() {
           ...newMessages,
           { role: 'assistant', content: returnMessage } as ChatGPTMessage,
         ]
-        setSessionList({type: 'modify', payload: session})
+        if (done) {
+          setSessionList({type: 'modify', payload: session})
+        } else {
+          setSessionList({type: 'responding', payload: session})
+        }
       }
     }
     if (!response.ok) {

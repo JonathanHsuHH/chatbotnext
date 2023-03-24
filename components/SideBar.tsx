@@ -58,11 +58,6 @@ export function SideBar() {
     };
 
     const onNewConversation = () => {
-        // save current session to server storage
-        if (curSessionIdx > 0) {
-          console.log("Save current session to server storage...")
-          saveCurrentSession(sessionList[curSessionIdx])
-        }
         console.log("Creating a new conversation...")
         const uniqueId = Math.random().toString(36)
         const lastIdx = sessionList.length

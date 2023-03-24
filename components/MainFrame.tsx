@@ -24,6 +24,15 @@ function sessionReducer(sessionList: ConversationInf[], action: {type: string, p
             return e
           }
         })
+      case 'responding':
+        // modify the element with uniqueId
+        return sessionList.map((e: ConversationInf) => { 
+          if (e.uniqueId === action.payload.uniqueId) {
+            return action.payload
+          } else {
+            return e
+          }
+        })
       default:
           throw new Error();
   }
