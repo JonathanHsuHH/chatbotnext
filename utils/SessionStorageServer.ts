@@ -1,4 +1,4 @@
-import { ConversationInf } from '../utils/Message'
+import { ConversationInf } from './Message'
 import toast from 'react-hot-toast'
 
 var bRedisInServer = false;

@@ -1,10 +1,10 @@
-import { ChatGPTMessage, initialMessages } from '../utils/Message'
-import { ChatLine, ErrorMsgChatLine, LoadingChatLine } from './ChatLine'
+import { ChatGPTMessage, ConversationInf, initialMessages, webSearchPromopt } from '../utils/Message'
+import { ChatLine, LoadingChatLine } from './ChatLine'
+import { PluginConfig, webSearch } from '../utils/Plugin'
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Button } from './Button'
-import { ConversationContext } from './Conversations';
-import { ConversationInf } from '../utils/Message';
+import { ConversationContext } from './Context';
 import toast from 'react-hot-toast'
 import { useCookies } from 'react-cookie'
 
@@ -59,8 +59,21 @@ const InputMessage = ({ input, setInput, sendMessage, regenerateResponse }: any)
   )
 }
 
+const updateMessgeByWebSearch = async (message: string, pluginConfig: PluginConfig) => {
+    const webSearchResp = await webSearch(message, pluginConfig.searchResultNum, pluginConfig.searchEngine)
+    if (webSearchResp.ok) {
+      const webSearchResult = webSearchResp.data
+      const currentDate = new Date().toLocaleDateString()
+      message = webSearchPromopt
+        .replace("{web_results}", webSearchResult)
+        .replace("{current_date}", currentDate)
+        .replace("{query}", message)
+    }
+    return message
+}
+
 export function Chat() {
-  const { sessionList, setSessionList, curSessionIdx, setCurSessionIdx } = useContext(ConversationContext)
+  const { sessionList, setSessionList, curSessionIdx, setCurSessionIdx, pluginConfig } = useContext(ConversationContext)
 
   let session = sessionList[curSessionIdx] as ConversationInf
   const sessionCnt = sessionList.length;
@@ -90,6 +103,9 @@ export function Chat() {
   const sendMessage = async (message: string) => {
     if (message === '' || loading !== '') {
       return
+    }
+    if (pluginConfig.useSearch) {
+      message = await updateMessgeByWebSearch(message, pluginConfig)
     }
     setLoading('Loading...')
     const newMessages = [

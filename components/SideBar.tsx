@@ -1,8 +1,8 @@
 import { BiAperture, BiCheck, BiEdit, BiMessage, BiMinusCircle, BiPlusCircle, BiX } from "react-icons/bi";
-import { removeCurrentSession, saveCurrentSession } from './SessionStorageServer';
+import { removeCurrentSession, saveCurrentSession } from '../utils/SessionStorageServer';
 import { useContext, useState } from 'react'
 
-import { ConversationContext } from './Conversations';
+import { ConversationContext } from './Context';
 import { ConversationInf } from '../utils/Message';
 import EdiText from 'react-editext'
 import styled from 'styled-components';
@@ -32,7 +32,7 @@ const StyledEdiText = styled(EdiText)`
 `
 
 export function SideBar() {
-    const { sessionList, setSessionList, curSessionIdx, setCurSessionIdx } = useContext(ConversationContext)
+    const { sessionList, setSessionList, curSessionIdx, setCurSessionIdx, pluginConfig, setPluginConfig } = useContext(ConversationContext)
     const [ editing, setEditing ] = useState(false)
     const onConversationSelect = (index: number) => {
       setCurSessionIdx(index);
@@ -72,56 +72,103 @@ export function SideBar() {
           <BiPlusCircle size={16} />
           <span>New conversation</span>
         </HeaderContainer>
-        {sessionList.slice(1).map((conversation: ConversationInf, index: number) => (
-          <ItemContainer key={index} selected={index + 1 === curSessionIdx} onClick={() => onConversationSelect(index + 1)}>
-            <SessionPart>
-              {(!editing || index + 1 !== curSessionIdx) && <BiMessage size={16} />}
-              <ConversationItem>
-                <StyledEdiText
-                  type='text'
-                  value={conversation.title}
-                  onSave={(val) => {
-                    onConversationEdit(val, index + 1) 
-                    setEditing(false)}
-                  }
-                  hideIcons={true}
-                  editing={editing && index + 1 === curSessionIdx}
-                  editButtonContent={''}
-                  saveButtonContent = {<BiCheck size={16}/>}
-                  cancelButtonContent = {<BiX size={16}/>}
-                  onEditingStart = {()=>setEditing(true)}
-                  onCancel = {()=>setEditing(false)}
-                />
-              </ConversationItem>
-            </SessionPart>
-            {!editing && index + 1 === curSessionIdx && <SessionPart>
-              <IconContainer>
-                <BiEdit size={16} onClick={() => setEditing(true)} />
-              </IconContainer>
-              <IconContainer>
-                <BiMinusCircle size={16} onClick={(e) => {onConversationRemove(index + 1); e.stopPropagation();}} />
-              </IconContainer>
-            </SessionPart>}
-          </ItemContainer>
-        ))}
+        <SessionContainer>
+          {sessionList.slice(1).map((conversation: ConversationInf, index: number) => (
+            <ItemContainer key={index} selected={index + 1 === curSessionIdx} onClick={() => onConversationSelect(index + 1)}>
+              <SessionPart>
+                {(!editing || index + 1 !== curSessionIdx) && <BiMessage size={16} />}
+                <ConversationItem>
+                  <StyledEdiText
+                    type='text'
+                    value={conversation.title}
+                    onSave={(val) => {
+                      onConversationEdit(val, index + 1) 
+                      setEditing(false)}
+                    }
+                    hideIcons={true}
+                    editing={editing && index + 1 === curSessionIdx}
+                    editButtonContent={''}
+                    saveButtonContent = {<BiCheck size={16}/>}
+                    cancelButtonContent = {<BiX size={16}/>}
+                    onEditingStart = {()=>setEditing(true)}
+                    onCancel = {()=>setEditing(false)}
+                  />
+                </ConversationItem>
+              </SessionPart>
+              {!editing && index + 1 === curSessionIdx && <SessionPart>
+                <IconContainer>
+                  <BiEdit size={16} onClick={() => setEditing(true)} />
+                </IconContainer>
+                <IconContainer>
+                  <BiMinusCircle size={16} onClick={(e) => {onConversationRemove(index + 1); e.stopPropagation();}} />
+                </IconContainer>
+              </SessionPart>}
+            </ItemContainer>
+          ))}
+        </SessionContainer>
+        <PluginContainer>
+          <WebSearchPluginContainer>
+            <label className="relative inline-flex items-center cursor-pointer justify-between">
+              <span className="mr-3 text-sm">Web search</span>
+              <input type="checkbox" 
+                defaultChecked={pluginConfig.useSearch} 
+                onChange={()=>{setPluginConfig({...pluginConfig, useSearch: !pluginConfig.useSearch})}}
+                className="sr-only peer"/>
+              <div className="w-10 h-5 bg-gray-200 
+              peer-focus:outline-none 
+              peer-focus:ring-4 
+              peer-focus:ring-blue-300 rounded-full
+              peer-checked:after:translate-x-full
+              peer-checked:after:border-white
+              after:content-[''] after:absolute after:top-[2px] 
+              after:right-[20px] after:bg-white after:border-gray-300 
+              after:border after:rounded-full after:h-4 after:w-4 
+              after:transition-all peer-checked:bg-blue"></div>
+            </label>
+            {pluginConfig.useSearch && <label className="relative inline-flex items-center cursor-pointer justify-between">
+              <span className="mr-3 text-sm w-60">Result number :</span>
+              <SelectBox value={pluginConfig.searchResultNum} onChange={e => setPluginConfig({...pluginConfig, searchResultNum: e.target.value})}>
+                <option value="1">1</option>
+                <option value="3">3</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+              </SelectBox>
+            </label>}
+            {pluginConfig.useSearch && <label className="relative inline-flex items-center cursor-pointer justify-between">
+              <span className="mr-3 text-sm w-60">Search engine :</span>
+              <SelectBox value={pluginConfig.searchEngine} onChange={e => setPluginConfig({...pluginConfig,  searchEngine: e.target.value})}>
+                <option value="Google">Google</option>
+              </SelectBox>
+            </label>}
+          </WebSearchPluginContainer>
+        </PluginContainer>
       </Container>
     )
 }
+
+const SwitchButton = tw.label`
+  relative inline-flex items-center cursor-pointer
+`;
+
+const SelectBox = tw.select`
+  bg-gray-50 border border-gray-300 text-gray-600 text-sm block w-full rounded-md w-40
+`;
 
 const Container = tw.div`
   hidden bg-gray-800 text-gray-300 md:fixed md:inset-y-0 md:flex md:w-[230px] md:flex-col p-2 gap-3
 `;
 
 const LogoContainer = tw.div`
-  px-3
-  py-3
-  flex
-  justify-center
+  px-3 py-3 flex justify-center
 `;
 
 const IconContainer = tw.div`
-  flex
-  items-center
+  flex items-center
+`;
+
+const SessionContainer = tw.div`
+  flex flex-col gap-3
+  h-1/2 no-scrollbar overflow-y-auto scroll-shadows max-h-[50%]
 `;
 
 const ItemContainer = tw.div<{ selected: boolean }>`
@@ -142,17 +189,20 @@ const HeaderContainer = tw.div`
   hover:bg-gray-500 transition-colors duration-200 cursor-pointer
 `;
 
+const PluginContainer = tw.div`
+  flex flex-col gap-3 px-3 py-3
+  no-scrollbar overflow-y-auto max-h-[40%]
+  border-t border-white border-opacity-50
+`;
+
+const WebSearchPluginContainer = tw.div`
+  flex flex-col gap-3 
+`;
+
 const SessionPart = tw.button`
-  flex
-  flex-row
-  gap-3
-  items-center
+  flex flex-row gap-3 items-center
 `;
 
 const ConversationItem = tw.button`
-  flex
-  items-center
-  text-left
-  focus:outline-none
-  truncate
+  flex items-center text-left focus:outline-none truncate
 `;

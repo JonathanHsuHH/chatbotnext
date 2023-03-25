@@ -1,4 +1,5 @@
 import { BiBot, BiCopy, BiUserVoice } from "react-icons/bi";
+import { formatBotMessage, formatUserMessage } from '../utils/TextFormatUtils'
 
 import { ChatGPTMessage } from '../utils/Message'
 import clsx from 'clsx'
@@ -25,21 +26,12 @@ export const ErrorMsgChatLine = ({errorMsg} : any)=> {
   </div>
 )}
 
-// util helper to convert new lines to <br /> tags
-const convertNewLines = (text: string) =>
-  text.split('\n').map((line, i) => (
-    <span key={i}>
-      {line}
-      <br />
-    </span>
-  ))
-
 export function ChatLine({ role = 'assistant', content }: ChatGPTMessage) {
   const [copyText, setCopyText] = useState("Copy")
   if (!content) {
     return null
   }
-  const formatteMessage = convertNewLines(content)
+  const formatteMessage = role == 'user' ? formatUserMessage(content) : formatBotMessage(content) 
   return (
     <div className="w-full float-left clear-both">
         <div className={clsx("w-full mb-5 px-4 py-5 sm:px-6", role == 'user' ? "bh-white": "bg-slate-200" )}>

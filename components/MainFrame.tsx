@@ -1,8 +1,9 @@
+import { PluginConfig, SearchEngineEnum } from '../utils/Plugin';
 import React, {useEffect, useReducer} from "react";
-import { getAllSaveSessions, saveCurrentSessionThrottle } from './SessionStorageServer';
+import { getAllSaveSessions, saveCurrentSessionThrottle } from '../utils/SessionStorageServer';
 
 import { Chat } from './ChatBox'
-import { ConversationContext } from './Conversations';
+import { ConversationContext } from './Context';
 import { ConversationInf } from '../utils/Message';
 import { SideBar } from './SideBar'
 import { Toaster } from 'react-hot-toast';
@@ -42,6 +43,10 @@ function curIdxReducer(state:number, newIndex: number) {
   return newIndex;
 }
 
+function pluginCfgReducer(state:PluginConfig, newConfig: PluginConfig) {
+  return newConfig;
+}
+
 export function MainFrame() {
   const defaultSessions: ConversationInf[] = [{title: "Default", uniqueId:"Default", createTime: Date.now(), contents:[]}]
 
@@ -59,9 +64,12 @@ export function MainFrame() {
   }, []); // The empty array causes this effect to only run on mount
   
   const [curSessionIdx, setCurSessionIdx] = useReducer(curIdxReducer, 0)
+
+  const defaultPluginConfig: PluginConfig = {useSearch: false, searchEngine: SearchEngineEnum.Google, searchResultNum: 3}
+  const [pluginConfig, setPluginConfig] = useReducer(pluginCfgReducer, defaultPluginConfig)
   return (    
     <div className="overflow-hidden w-full h-screen relative">
-        <ConversationContext.Provider value={{sessionList, setSessionList, curSessionIdx, setCurSessionIdx}}>
+        <ConversationContext.Provider value={{sessionList, setSessionList, curSessionIdx, setCurSessionIdx, pluginConfig, setPluginConfig}}>
           <div className="flex h-full flex-1 flex-col md:pl-[260px]">
               <Chat />
           </div>
