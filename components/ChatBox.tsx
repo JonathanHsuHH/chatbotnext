@@ -250,7 +250,7 @@ export function Chat() {
 
   const getPlaceHolder = ()=>{
     if (pluginConfig.useSearch) {
-      return "Use web search result in by defult prompt.\nYou can also set your own prompt using ##...## to enclose the search keyword."
+      return "Search input message and include the search results in default prompt.\nYou can also set your own prompt using ##...## to enclose the search keyword."
     } else {
       return "Type a message to start the conversation..."
     }
