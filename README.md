@@ -41,6 +41,14 @@ Setup: Deploy a redis server, in .env.local update `REDIS_URL` with redis server
 
 With web search result, you can let chatGpt to search the web for you, and return the result.
 
-Setup: In .env.local, update `GOOGLE_SEARCH_API_KEY` and `GOOGLE_SEARCH_CONTENXT_KEY` for web search, refer to (https://developers.google.com/custom-search/v1/introduction#identify_your_application_to_google_with_api_ke)
+Setup: In .env.local, 
+update `GOOGLE_SEARCH_API_KEY` and `GOOGLE_SEARCH_CONTENXT_KEY` for google search, refer to (https://developers.google.com/custom-search/v1/introduction#identify_your_application_to_google_with_api_ke)
+update `BING_SEARCH_V7_SUBSCRIPTION_KEY` for bing search, refer to (https://learn.microsoft.com/en-us/bing/search-apis/bing-web-search/overview)
 
 Usage: Turn on the web search button in left pane. By default, the input message will be used as search key words and the search results will by be included in a default prompt. You can also set your own prompt using ##...## to enclose the search keyword.
+
+## To Do
+1. Format code snippets in output
+2. Detailed search result and more search engines
+3. Automatically set session name by summarize chat with gpt
+4. User authtication

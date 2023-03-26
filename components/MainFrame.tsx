@@ -65,7 +65,7 @@ export function MainFrame() {
   
   const [curSessionIdx, setCurSessionIdx] = useReducer(curIdxReducer, 0)
 
-  const defaultPluginConfig: PluginConfig = {useSearch: false, searchEngine: SearchEngineEnum.Google, searchResultNum: 3}
+  const defaultPluginConfig: PluginConfig = {useSearch: false, searchEngine: SearchEngineEnum.Bing, searchResultNum: 3}
   const [pluginConfig, setPluginConfig] = useReducer(pluginCfgReducer, defaultPluginConfig)
   return (    
     <div className="overflow-hidden w-full h-screen relative">

@@ -138,6 +138,7 @@ export function SideBar() {
               <span className="mr-3 text-sm w-60">Search engine :</span>
               <SelectBox value={pluginConfig.searchEngine} onChange={e => setPluginConfig({...pluginConfig,  searchEngine: e.target.value})}>
                 <option value="Google">Google</option>
+                <option value="Bing">Bing</option>
               </SelectBox>
             </label>}
           </WebSearchPluginContainer>

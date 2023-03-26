@@ -18,8 +18,9 @@ export async function webSearch(queryText: string, resultNum: number, searchEngi
     switch (searchEngine) {
         case SearchEngineEnum.Google:
             return await googleSearch(queryText, resultNum)
-        /*case SearchEngineEnum.Bing:
+        case SearchEngineEnum.Bing:
             return await bingSearch(queryText, resultNum)
+        /*
         case SearchEngineEnum.Baidu:
             return await baiduSearch(queryText, resultNum)*/
         default:
@@ -48,6 +49,30 @@ export async function googleSearch(queryText: string, resultNum: number) {
                     snippet = item.snippet.slice(maintextIndex + 5)
                 }
                 return `[${index + 1}] "${snippet}"\nURL: ${item.link}`
+            })
+            return {data: queryResult.join("\n\n"), ok: true}
+        }
+    } else {
+        return {ok: false}
+    }
+}
+
+export async function bingSearch(queryText: string, resultNum: number) {
+    const response = await fetch('/api/bingSearch', {
+        body: JSON.stringify({queryText: queryText, resultNum: resultNum}),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+    })
+    if (response.ok) {
+        const result = await response.json()
+        if (result.error) {
+            toast.error(`webSearch Error: ${result.error.message}`)
+            return {ok: false}
+        } else {
+            const queryResult = result.data.webPages.value.map((item: any, index: number) => {
+                return `[${index + 1}] "${item.snippet}"\nURL: ${item.url}`
             })
             return {data: queryResult.join("\n\n"), ok: true}
         }
