@@ -10,14 +10,14 @@ import { useCookies } from 'react-cookie'
 
 const COOKIE_NAME = 'ai-chat-gpt3'
 
-const InputMessage = ({ input, setInput, sendMessage, regenerateResponse }: any) => {
+const InputMessage = ({ input, setInput, sendMessage, regenerateResponse, placeholder }: any) => {
   // remove newline in tail of message
   input = input.replace(/^\n|\n$/g, '')
   return (
     <div className="mt-6 flex clear-both">
       <textarea
         spellCheck="true"
-        placeholder="Type a message and press enter to send..."
+        placeholder={placeholder}
         rows={2}
         aria-label="chat input"
         required
@@ -60,14 +60,27 @@ const InputMessage = ({ input, setInput, sendMessage, regenerateResponse }: any)
 }
 
 const updateMessgeByWebSearch = async (message: string, pluginConfig: PluginConfig) => {
-    const webSearchResp = await webSearch(message, pluginConfig.searchResultNum, pluginConfig.searchEngine)
-    if (webSearchResp.ok) {
-      const webSearchResult = webSearchResp.data
-      const currentDate = new Date().toLocaleDateString()
-      message = webSearchPromopt
-        .replace("{web_results}", webSearchResult)
-        .replace("{current_date}", currentDate)
-        .replace("{query}", message)
+    // regrex match to get words encloused with #, e.g. ##hello##world## => [hello, world]
+    const regrex = /##([^#]+)##/g
+    const match = message.match(regrex)
+    if (match) {
+      for (const word of match) {
+        const webSearchResp = await webSearch(word.slice(2,-2), pluginConfig.searchResultNum, pluginConfig.searchEngine)
+        if (webSearchResp.ok) {
+          const webSearchResult = webSearchResp.data
+          message = message.replace(word, `\n${webSearchResult}\n`)
+        }
+      }
+    } else {
+      const webSearchResp = await webSearch(message, pluginConfig.searchResultNum, pluginConfig.searchEngine)
+      if (webSearchResp.ok) {
+        const webSearchResult = webSearchResp.data
+        const currentDate = new Date().toLocaleDateString()
+        message = webSearchPromopt
+          .replace("{web_results}", webSearchResult)
+          .replace("{current_date}", currentDate)
+          .replace("{query}", message)
+      }
     }
     return message
 }
@@ -235,6 +248,14 @@ export function Chat() {
     }
   }
 
+  const getPlaceHolder = ()=>{
+    if (pluginConfig.useSearch) {
+      return "Use web search result in by defult prompt.\nYou can also set your own prompt using ##...## to enclose the search keyword."
+    } else {
+      return "Type a message to start the conversation..."
+    }
+  }
+
   return (
     <div className="relative h-full w-full overflow-hidden transition-width flex flex-col flex-1 items-center pb-28">
       <div className="flex flex-1 w-full overflow-y-auto justify-center">
@@ -257,6 +278,7 @@ export function Chat() {
             setInput={setInput}
             sendMessage={sendMessage}
             regenerateResponse={regenerateResponse}
+            placeholder={getPlaceHolder()}
           />
       </div>}
     </div>
