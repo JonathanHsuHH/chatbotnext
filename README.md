@@ -48,7 +48,7 @@ update `BING_SEARCH_V7_SUBSCRIPTION_KEY` for bing search, refer to (https://lear
 Usage: Turn on the web search button in left pane. By default, the input message will be used as search key words and the search results will by be included in a default prompt. You can also set your own prompt using ##...## to enclose the search keyword.
 
 ## To Do
-1. Format code snippets in output
-2. Detailed search result and more search engines
+1. Detailed search result and more search engines
+2. Upload file and consume file
 3. Automatically set session name by summarize chat with gpt
 4. User authtication

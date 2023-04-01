@@ -34,13 +34,15 @@ export function ChatLine({ role = 'assistant', content }: ChatGPTMessage) {
   const formatteMessage = role == 'user' ? formatUserMessage(content) : formatBotMessage(content) 
   return (
     <div className="w-full float-left clear-both">
-        <div className={clsx("w-full mb-5 px-4 py-5 sm:px-6", role == 'user' ? "bh-white": "bg-slate-200" )}>
-            <div className="w-full flex flex-row gap-4">
-              {role == 'user' ? <BiUserVoice size={24} /> : <BiBot size={24} />}
-              <p className="w-11/12 font-large text-xxl text-gray-900">
+        <div className={clsx("w-full mb-5 px-4 py-4 sm:px-4", role == 'user' ? "bh-white": "bg-slate-200" )}>
+            <div className="w-full flex flex-row gap-3">
+              <div className="grow-0 shrink-0">
+                {role == 'user' ? <BiUserVoice size={24} /> : <BiBot size={24} />}
+              </div>
+              <p className="w-[90%] text-gray-900 grow-0 shrink-0">
                 {formatteMessage}
               </p>
-              <div className="group flex relative opacity-10 hover:opacity-100">
+              <div className="opacity-10 hover:opacity-100 grow-0 shrink-0">
                 <BiCopy size={24} onClick={()=>{navigator.clipboard.writeText(content); setCopyText("Copied")}} onMouseLeave={()=>{setCopyText("Copy")}}/>
                 <span className="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2 
                 -translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto">{copyText}</span>
