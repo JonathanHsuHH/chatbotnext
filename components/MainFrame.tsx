@@ -68,7 +68,7 @@ export function MainFrame() {
   const defaultPluginConfig: PluginConfig = {useSearch: false, searchEngine: SearchEngineEnum.Bing, searchResultNum: 3}
   const [pluginConfig, setPluginConfig] = useReducer(pluginCfgReducer, defaultPluginConfig)
   return (    
-    <div className="overflow-hidden w-full h-screen relative">
+    <div className="overflow-hidden w-full h-screen relative text-sm">
         <ConversationContext.Provider value={{sessionList, setSessionList, curSessionIdx, setCurSessionIdx, pluginConfig, setPluginConfig}}>
           <div className="flex h-full flex-1 flex-col md:pl-[260px]">
               <Chat />

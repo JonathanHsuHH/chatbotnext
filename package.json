@@ -22,7 +22,9 @@
     "react-editext": "^5.1.0",
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.8.0",
+    "react-markdown": "^8.0.6",
     "react-wrap-balancer": "^0.1.5",
+    "rehype-highlight": "^6.0.0",
     "styled-components": "^5.3.9",
     "tailwind-styled-components": "^2.2.0"
   },

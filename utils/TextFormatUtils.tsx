@@ -1,17 +1,8 @@
-
-// urlText example: [[2](https://www.nbcnews.com/tech/tiktok-proposed-ban-users-creators-react-rcna75456)]
-export function replaceUrlWithHyerlinkTag(urlText: string) {
-    return urlText.replace(/\[\[(.*?)\]\((.*?)\)\]/g, "<a href='$2'>[$1]</a>")
-}
+import ReactMarkdown from 'react-markdown'
+import rehypeHighlight from 'rehype-highlight'
 
 export const formatBotMessage = (text: string) => 
-    text.split('\n').map((line, i) => (
-        <span key={i}>
-            <article className="prose" dangerouslySetInnerHTML={{ __html: replaceUrlWithHyerlinkTag(line) }} />
-            <br />
-        </span>
-        )
-    )
+    <ReactMarkdown rehypePlugins={[rehypeHighlight]}>{text}</ReactMarkdown>
   
 export const formatUserMessage = (text: string) => 
     text.split('\n').map((line, i) => (
