@@ -1,6 +1,7 @@
 import toast from 'react-hot-toast'
 
 export interface PluginConfig {
+    usePromptSuggestion: boolean;
     useSearch: boolean;
     searchEngine: SearchEngineEnum;
     searchResultNum: NumberInRange;

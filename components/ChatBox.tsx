@@ -5,17 +5,19 @@ import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Button } from './Button'
 import { ConversationContext } from './Context';
+import SlashCommandsMenu from './SlashCommandsMenu'
 import toast from 'react-hot-toast'
 import { useCookies } from 'react-cookie'
 
 const COOKIE_NAME = 'ai-chat-gpt3'
 
-const InputMessage = ({ input, setInput, sendMessage, regenerateResponse, placeholder }: any) => {
+const InputMessage = ({ input, setInput, sendMessage, regenerateResponse, placeholder, textAreaRef }: any) => {
   // remove newline in tail of message
   input = input.replace(/^\n|\n$/g, '')
   return (
     <div className="mt-6 flex clear-both">
       <textarea
+        ref={textAreaRef}
         spellCheck="true"
         placeholder={placeholder}
         rows={2}
@@ -25,7 +27,7 @@ const InputMessage = ({ input, setInput, sendMessage, regenerateResponse, placeh
         value={input}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
-            sendMessage(input)
+            sendMessage(e.currentTarget.value)
             setInput('')
           }
         }}
@@ -98,6 +100,7 @@ export function Chat() {
   const [loading, setLoading] = useState('')
   const [cookie, setCookie] = useCookies([COOKIE_NAME])
   const bottomRef = useRef<HTMLDivElement|null>(null)
+  const textAreaRef = useRef<HTMLTextAreaElement|null>(null)
 
   useEffect(() => {
     if (!cookie[COOKIE_NAME]) {
@@ -111,6 +114,12 @@ export function Chat() {
     // scroll to bottom every time messages change
     bottomRef.current?.scrollIntoView({behavior: 'auto'});
   }, [messages, loading]);
+
+  useEffect(() => {
+    textAreaRef?.current?.addEventListener('promptExpand', e=>{ 
+      setInput((e.target as HTMLTextAreaElement)?.value)
+    })
+  })
 
   // send message to API /api/chat endpoint
   const sendMessage = async (message: string) => {
@@ -249,11 +258,17 @@ export function Chat() {
   }
 
   const getPlaceHolder = ()=>{
-    if (pluginConfig.useSearch) {
-      return "Search input message and include the search results in default prompt.\nYou can also set your own prompt using ##...## to enclose the search keyword."
-    } else {
+    if (!pluginConfig.useSearch && !pluginConfig.usePromptSuggestion) {
       return "Type a message to start the conversation..."
     }
+    let result = ""
+    if (pluginConfig.useSearch) {
+      result += "Search input message and include the search results in default prompt.\nYou can also set your own prompt using ##...## to enclose the search keyword.\n"
+    }
+    if (pluginConfig.usePromptSuggestion) {
+      result += "Press / to open the prompt suggestions\n"
+    }
+    return result
   }
 
   return (
@@ -273,12 +288,14 @@ export function Chat() {
         </div>
       </div>
       {messages && <div className="absolute bottom-0 w-full p-3 lg:max-w-3xl">
+        <SlashCommandsMenu textarea={textAreaRef?.current} />
         <InputMessage
             input={input}
             setInput={setInput}
             sendMessage={sendMessage}
             regenerateResponse={regenerateResponse}
             placeholder={getPlaceHolder()}
+            textAreaRef={textAreaRef}
           />
       </div>}
     </div>

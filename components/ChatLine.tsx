@@ -39,10 +39,10 @@ export function ChatLine({ role = 'assistant', content }: ChatGPTMessage) {
               <div className="grow-0 shrink-0">
                 {role == 'user' ? <BiUserVoice size={24} /> : <BiBot size={24} />}
               </div>
-              <p className="w-[90%] text-gray-900 grow-0 shrink-0">
+              <p className="w-[90%] overflow-x-auto text-gray-900 grow-0 shrink-0">
                 {formatteMessage}
               </p>
-              <div className="opacity-10 hover:opacity-100 grow-0 shrink-0">
+              <div className="relative opacity-10 hover:opacity-100 ">
                 <BiCopy size={24} onClick={()=>{navigator.clipboard.writeText(content); setCopyText("Copied")}} onMouseLeave={()=>{setCopyText("Copy")}}/>
                 <span className="group-hover:opacity-100 transition-opacity bg-gray-800 px-1 text-sm text-gray-100 rounded-md absolute left-1/2 
                 -translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto">{copyText}</span>

@@ -18,7 +18,7 @@ const handler = async (req: Request): Promise<Response> => {
   const messages: ChatGPTMessage[] = [
     {
       role: 'system',
-      content: `Answer as concisely as possible. Today is ${new Date().toLocaleDateString()}`,
+      content: `You are a helpful assistant. Today is ${new Date().toLocaleDateString()}`,
     },
   ]
   messages.push(...body?.messages)
