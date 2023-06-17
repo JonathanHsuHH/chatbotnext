@@ -13,7 +13,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
             return
         }
         const body = req.body;
-        const user = Users.find((user: any) => user.username === body.username && user.password === btoa(body.password));
+        const user = Users.find((user: any) => user.username === body.username && user.password == btoa(body.password));
         if (!user) {
             res.status(405).json({
                 error: `Username or password is incorrect.`,
