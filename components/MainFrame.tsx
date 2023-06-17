@@ -73,7 +73,7 @@ export function MainFrame() {
           <div className="flex h-full flex-1 flex-col md:pl-[260px]">
               <Chat />
           </div>
-          <div><Toaster/></div>
+          <div><Toaster position='top-right'/></div>
           <SideBar/>
         </ConversationContext.Provider>
     </div>

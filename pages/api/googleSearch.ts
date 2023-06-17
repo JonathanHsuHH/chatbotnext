@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-export default async function handler(
+import { apiHandler } from '../../utils/api';
+
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -10,3 +12,5 @@ export default async function handler(
   ).then((response) => response.json());
   res.status(200).json({ data })
 }
+
+export default apiHandler(handler);

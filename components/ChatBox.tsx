@@ -6,6 +6,7 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { Button } from './Button'
 import { ConversationContext } from './Context';
 import SlashCommandsMenu from './SlashCommandsMenu'
+import {postWrapper} from '../utils/api/fetchWrapper';
 import toast from 'react-hot-toast'
 import { useCookies } from 'react-cookie'
 
@@ -146,17 +147,10 @@ export function Chat() {
     }
 
     const last10messages = newMessages.slice(-10) // remember last 10 messages
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        messages: last10messages,
-        user: cookie[COOKIE_NAME],
-      }),
-    })
-
+    const response = await postWrapper('/api/chat', JSON.stringify({
+      messages: last10messages,
+      user: cookie[COOKIE_NAME],
+    }));
     console.log('Edge function returned.')
 
     // This data is a ReadableStream
@@ -207,17 +201,10 @@ export function Chat() {
     setSessionList({type: 'modify', payload: session})
     const last10messages = newMessages.slice(-10) // remember last 10 messages
 
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        messages: last10messages,
-        user: cookie[COOKIE_NAME],
-      }),
-    })
-
+    const response = await postWrapper('/api/chat', JSON.stringify({
+      messages: last10messages,
+      user: cookie[COOKIE_NAME],
+    }));
     console.log('Edge function returned.')
 
     // This data is a ReadableStream

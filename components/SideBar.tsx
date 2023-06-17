@@ -1,12 +1,14 @@
 import { BiAperture, BiCheck, BiEdit, BiMessage, BiMinusCircle, BiPlusCircle, BiX } from "react-icons/bi";
 import { removeCurrentSession, saveCurrentSession } from '../utils/SessionStorageServer';
-import { useContext, useState } from 'react'
+import { useContext, useState } from 'react';
 
 import { ConversationContext } from './Context';
 import { ConversationInf } from '../utils/Message';
 import EdiText from 'react-editext'
+import { logout } from "../utils/LoginUtils";
 import styled from 'styled-components';
 import tw from "tailwind-styled-components";
+import { useRouter } from 'next/router';
 
 const StyledEdiText = styled(EdiText)`
   button[editext="edit-button"] {
@@ -32,6 +34,7 @@ const StyledEdiText = styled(EdiText)`
 `
 
 export function SideBar() {
+    const router = useRouter();
     const { sessionList, setSessionList, curSessionIdx, setCurSessionIdx, pluginConfig, setPluginConfig } = useContext(ConversationContext)
     const [ editing, setEditing ] = useState(false)
     const onConversationSelect = (index: number) => {
@@ -43,8 +46,7 @@ export function SideBar() {
       setCurSessionIdx(0)
       const uniqueId = sessionList.map((e: ConversationInf) => e.uniqueId)[index]
       setSessionList({type: 'delete', payload: {title: "", uniqueId, contents: []}})
-
-      removeCurrentSession(uniqueId)
+      removeCurrentSession(uniqueId);
     };
 
     const onConversationEdit = (title: string, index: number) => { 
@@ -66,7 +68,9 @@ export function SideBar() {
     return (
       <Container>
         <LogoContainer>
-          <BiAperture size={48} />
+          <BiAperture size={48} 
+            //onClick={()=>{logout(); router.push('/login');}}
+          />
         </LogoContainer>
         <HeaderContainer onClick={onNewConversation}>
           <BiPlusCircle size={16} />
