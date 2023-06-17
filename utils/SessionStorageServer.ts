@@ -1,15 +1,13 @@
 import { ConversationInf } from './Message'
+import { getCurrentUser } from './LoginUtils'
+import {postWrapper} from '../utils/api/fetchWrapper';
 import toast from 'react-hot-toast'
 
 var bRedisInServer = false;
 export async function getAllSaveSessions()
 {
-    const response = await fetch('/api/getAllSessions', {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-    })
+    const userId = getCurrentUser();
+    const response = await postWrapper('/api/getAllSessions', JSON.stringify({userId}));
     if (response.ok) {
         bRedisInServer = true
         return await response.json()
@@ -23,14 +21,8 @@ export async function saveCurrentSession(curSession: ConversationInf)
     if (!bRedisInServer) {
         return
     }
-    const res = await fetch('/api/updateSession', {
-        body: JSON.stringify(curSession),
-        headers: {
-        'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        }
-    )
+    const userId = getCurrentUser();
+    const res = await postWrapper('/api/updateSession', JSON.stringify({...curSession, userId}));
     const { error } = await res.json()
     if (error) {
       toast.error((`Fail to save current session: ${error}`))
@@ -53,14 +45,8 @@ export async function removeCurrentSession(uniqueId: string)
     if (!bRedisInServer) {
         return
     }
-    const res = await fetch('/api/deleteSession', {
-        body: JSON.stringify({uniqueId}),
-        headers: {
-        'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        }
-    )
+    const userId = getCurrentUser();
+    const res = await postWrapper('/api/deleteSession', JSON.stringify({uniqueId, userId}));
     const { error } = await res.json()
     if (error) {
         toast.error((`Fail to delete session: ${error}`))

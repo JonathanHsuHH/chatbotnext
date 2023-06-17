@@ -1,3 +1,4 @@
+import {postWrapper} from '../utils/api/fetchWrapper';
 import toast from 'react-hot-toast'
 
 export interface PluginConfig {
@@ -30,13 +31,7 @@ export async function webSearch(queryText: string, resultNum: number, searchEngi
 }
 
 export async function googleSearch(queryText: string, resultNum: number) {
-    const response = await fetch('/api/googleSearch', {
-        body: JSON.stringify({queryText: queryText, resultNum: resultNum}),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-    })
+    const response = await postWrapper('/api/googleSearch', JSON.stringify({queryText: queryText, resultNum: resultNum}));
     if (response.ok) {
         const result = await response.json()
         if (result.error) {
@@ -59,13 +54,7 @@ export async function googleSearch(queryText: string, resultNum: number) {
 }
 
 export async function bingSearch(queryText: string, resultNum: number) {
-    const response = await fetch('/api/bingSearch', {
-        body: JSON.stringify({queryText: queryText, resultNum: resultNum}),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-    })
+    const response = await postWrapper('/api/bingSearch', JSON.stringify({queryText: queryText, resultNum: resultNum}));
     if (response.ok) {
         const result = await response.json()
         if (result.error) {
