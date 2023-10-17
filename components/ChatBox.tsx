@@ -1,6 +1,6 @@
 import { ChatGPTMessage, ConversationInf, initialMessages, webSearchPromopt } from '../utils/Message'
 import { ChatLine, LoadingChatLine } from './ChatLine'
-import { PluginConfig, webSearch } from '../utils/Plugin'
+import { ModelVersion, PluginConfig, webSearch } from '../utils/Plugin'
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Button } from './Button'
@@ -89,7 +89,7 @@ const updateMessgeByWebSearch = async (message: string, pluginConfig: PluginConf
 }
 
 export function Chat() {
-  const { sessionList, setSessionList, curSessionIdx, setCurSessionIdx, pluginConfig } = useContext(ConversationContext)
+  const { sessionList, setSessionList, curSessionIdx, setCurSessionIdx, pluginConfig, setPluginConfig } = useContext(ConversationContext)
 
   let session = sessionList[curSessionIdx] as ConversationInf
   const sessionCnt = sessionList.length;
@@ -150,6 +150,7 @@ export function Chat() {
     const response = await postWrapper('/api/chat', JSON.stringify({
       messages: last10messages,
       user: cookie[COOKIE_NAME],
+      model: pluginConfig.useGPT4 ? ModelVersion.gpt4 : ModelVersion.gpt35, 
     }));
     console.log('Edge function returned.')
 
@@ -258,8 +259,29 @@ export function Chat() {
     return result
   }
 
+  const disableGPTToggle = messages.length > 0
+
   return (
     <div className="relative h-full w-full overflow-hidden transition-width flex flex-col flex-1 items-center pb-28">
+      <div className="flex items-center justify-center h-10 w-full border-b border-black border-opacity-25">
+        <label className="relative inline-flex items-center cursor-pointer justify-between">
+          <input disabled={disableGPTToggle} type="checkbox" 
+                  defaultChecked={pluginConfig.useGPT4} 
+                  onChange={()=>{setPluginConfig({...pluginConfig, useGPT4: !pluginConfig.useGPT4})}}
+                  className="sr-only peer"/>
+          { disableGPTToggle ? <span className="mr-3 text-sm">Model version: {pluginConfig.useGPT4 ? "GPT4": "GPT3.5"}</span> : <span className="mr-3 text-sm">Use GPT4</span> }
+          { !disableGPTToggle && <div className="w-10 h-5 bg-gray-200 
+                peer-focus:outline-none 
+                peer-focus:ring-4 
+                peer-focus:ring-blue-300 rounded-full
+                peer-checked:after:translate-x-full
+                peer-checked:after:border-white
+                after:content-[''] after:absolute after:top-[2px] 
+                after:right-[20px] after:bg-white after:border-gray-300 
+                after:border after:rounded-full after:h-4 after:w-4 
+                after:transition-all peer-checked:bg-blue"></div> }
+        </label>
+      </div>
       <div className="flex flex-1 w-full overflow-y-auto justify-center">
         <div className="w-full lg:max-w-3xl p-3 md:h-full md:flex md:flex-col">
           {messages?.map(({ content, role }, index) => (

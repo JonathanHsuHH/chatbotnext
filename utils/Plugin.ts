@@ -6,6 +6,7 @@ export interface PluginConfig {
     useSearch: boolean;
     searchEngine: SearchEngineEnum;
     searchResultNum: NumberInRange;
+    useGPT4: boolean;
 };
 
 export type NumberInRange = 1 | 3 | 5 | 10;
@@ -14,6 +15,11 @@ export enum SearchEngineEnum {
     Google = 'Google',
     Bing = 'Bing',
     Baidu = 'Baidu'
+};
+
+export enum ModelVersion {
+    gpt35 = 'gpt35',
+    gpt4 = 'gpt4'
 };
 
 export async function webSearch(queryText: string, resultNum: number, searchEngine: SearchEngineEnum) {

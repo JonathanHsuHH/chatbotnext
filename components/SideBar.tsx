@@ -5,7 +5,6 @@ import { useContext, useState } from 'react';
 import { ConversationContext } from './Context';
 import { ConversationInf } from '../utils/Message';
 import EdiText from 'react-editext'
-import { logout } from "../utils/LoginUtils";
 import styled from 'styled-components';
 import tw from "tailwind-styled-components";
 import { useRouter } from 'next/router';

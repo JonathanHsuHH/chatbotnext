@@ -1,6 +1,7 @@
 import { type ChatGPTMessage } from '../../utils/Message'
 import { OpenAIStream, OpenAIStreamPayload } from '../../utils/OpenAIStream'
-
+import { AzureOAIStream } from '../../utils/AzureOAIStream'
+import { ModelVersion } from '../../utils/Plugin'
 
 export const config = {
   runtime: 'edge',
@@ -22,17 +23,10 @@ const handler = async (req: Request): Promise<Response> => {
     },
   ]
   messages.push(...body?.messages)
-  const requestHeaders: Record<string, string> = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-  }
-
-  if (process.env.OPENAI_API_ORG) {
-    requestHeaders['OpenAI-Organization'] = process.env.OPENAI_API_ORG
-  }
 
   const payload: OpenAIStreamPayload = {
-    model: 'gpt-3.5-turbo',
+    //model: 'gpt-3.5-turbo',
+    model: body?.model == ModelVersion.gpt4 ? 'gpt4' : 'gpt-3.5-turbo',
     messages: messages,
     temperature: process.env.AI_TEMP ? parseFloat(process.env.AI_TEMP) : 0.7,
     max_tokens: process.env.AI_MAX_TOKENS
@@ -45,7 +39,7 @@ const handler = async (req: Request): Promise<Response> => {
     user: body?.user,
   }
 
-  const stream = await OpenAIStream(payload)
+  const stream = process.env.USEAZUREAOI ? await AzureOAIStream(payload) : await OpenAIStream(payload)
   return stream
 }
 export default handler

@@ -65,12 +65,12 @@ export function MainFrame() {
   
   const [curSessionIdx, setCurSessionIdx] = useReducer(curIdxReducer, 0)
 
-  const defaultPluginConfig: PluginConfig = {usePromptSuggestion: false, useSearch: false, searchEngine: SearchEngineEnum.Bing, searchResultNum: 3}
+  const defaultPluginConfig: PluginConfig = {usePromptSuggestion: false, useSearch: false, searchEngine: SearchEngineEnum.Bing, searchResultNum: 3, useGPT4: false}
   const [pluginConfig, setPluginConfig] = useReducer(pluginCfgReducer, defaultPluginConfig)
   return (    
     <div className="overflow-hidden w-full h-screen relative text-sm">
         <ConversationContext.Provider value={{sessionList, setSessionList, curSessionIdx, setCurSessionIdx, pluginConfig, setPluginConfig}}>
-          <div className="flex h-full flex-1 flex-col md:pl-[260px]">
+          <div className="flex h-full flex-1 flex-col md:pl-[230px]">
               <Chat />
           </div>
           <div><Toaster position='top-right'/></div>
