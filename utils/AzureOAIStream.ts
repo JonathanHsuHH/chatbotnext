@@ -18,10 +18,16 @@ export async function AzureOAIStream(payload: OpenAIStreamPayload) {
       'api-key': `${process.env.OPENAI_API_KEY ?? ''}`,
     }
 
-    let requrl = 'https://gptservice2023.openai.azure.com/openai/deployments/gpt35/chat/completions?api-version=2023-07-01-preview';
+    let requrl = process.env.AZUREAOI_URL;
     if (payload.model == 'gpt4') {
       console.log('gpt4')
-      requrl = 'https://gptservice2023.openai.azure.com/openai/deployments/gpt4/chat/completions?api-version=2023-07-01-preview';
+      requrl = requrl?.replace('gpt35', 'gpt4');
+    }
+
+    if (!requrl) {
+      const options = { status: 500, statusText: "API error" };
+      const resp = new Response(`Exception when call OpenAI API: no AZUREAOI_URL`, options)
+      return resp
     }
 
     const res = await fetch(requrl, {
