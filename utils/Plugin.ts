@@ -6,7 +6,7 @@ export interface PluginConfig {
     useSearch: boolean;
     searchEngine: SearchEngineEnum;
     searchResultNum: NumberInRange;
-    useGPT4: boolean;
+    //useGPT4: boolean;
 };
 
 export type NumberInRange = 1 | 3 | 5 | 10;
