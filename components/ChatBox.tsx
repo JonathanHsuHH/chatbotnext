@@ -150,7 +150,7 @@ export function Chat() {
     const response = await postWrapper('/api/chat', JSON.stringify({
       messages: last10messages,
       user: cookie[COOKIE_NAME],
-      model: pluginConfig.useGPT4 ? ModelVersion.gpt4 : ModelVersion.gpt35, 
+      //model: ModelVersion.gpt4, 
     }));
     console.log('Edge function returned.')
 
@@ -260,7 +260,7 @@ export function Chat() {
   }
 
   //const disableGPTToggle = messages.length > 0
-  
+
   return (
     <div className="relative h-full w-full overflow-hidden transition-width flex flex-col flex-1 items-center pb-28">
       <div className="flex items-center justify-center h-10 w-full border-b border-black border-opacity-25">

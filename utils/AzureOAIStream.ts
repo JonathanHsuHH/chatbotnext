@@ -19,10 +19,10 @@ export async function AzureOAIStream(payload: OpenAIStreamPayload) {
     }
 
     let requrl = process.env.AZUREAOI_URL;
-    if (payload.model == 'gpt4') {
+    /*if (payload.model == 'gpt4') {
       console.log('gpt4')
       requrl = requrl?.replace('gpt35', 'gpt4');
-    }
+    }*/
 
     if (!requrl) {
       const options = { status: 500, statusText: "API error" };
