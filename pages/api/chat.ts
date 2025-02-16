@@ -25,9 +25,7 @@ const handler = async (req: Request): Promise<Response> => {
   messages.push(...body?.messages)
 
   const payload: OpenAIStreamPayload = {
-    //model: 'gpt-3.5-turbo',
-    //model: body?.model == ModelVersion.gpt4 ? 'gpt4' : 'gpt-3.5-turbo',
-    model: process.env.MODEL,
+    model: body?.model == ModelVersion.gpt4 ? undefined : process.env.MODEL,
     messages: messages,
     temperature: process.env.AI_TEMP ? parseFloat(process.env.AI_TEMP) : 0.7,
     max_tokens: process.env.AI_MAX_TOKENS
@@ -40,7 +38,7 @@ const handler = async (req: Request): Promise<Response> => {
     user: body?.user,
   }
 
-  const stream = process.env.USEAZUREAOI ? await AzureOAIStream(payload) : await OpenAIStream(payload)
+  const stream = ModelVersion.gpt4 ? await AzureOAIStream(payload) : await OpenAIStream(payload)
   return stream
 }
 export default handler

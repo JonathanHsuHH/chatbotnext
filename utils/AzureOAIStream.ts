@@ -15,7 +15,7 @@ export async function AzureOAIStream(payload: OpenAIStreamPayload) {
   
     const requestHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
-      'api-key': `${process.env.OPENAI_API_KEY ?? ''}`,
+      'api-key': `${process.env.AZUREOPENAI_API_KEY ?? ''}`,
     }
 
     let requrl = process.env.AZUREAOI_URL;

@@ -150,7 +150,7 @@ export function Chat() {
     const response = await postWrapper('/api/chat', JSON.stringify({
       messages: last10messages,
       user: cookie[COOKIE_NAME],
-      //model: ModelVersion.gpt4, 
+      model: pluginConfig.useDeepSeek ? ModelVersion.deepseekr1 : ModelVersion.gpt4, 
     }));
     console.log('Edge function returned.')
 
@@ -205,6 +205,7 @@ export function Chat() {
     const response = await postWrapper('/api/chat', JSON.stringify({
       messages: last10messages,
       user: cookie[COOKIE_NAME],
+      model: pluginConfig.useDeepSeek ? ModelVersion.deepseekr1 : ModelVersion.gpt4, 
     }));
     console.log('Edge function returned.')
 
@@ -265,21 +266,6 @@ export function Chat() {
     <div className="relative h-full w-full overflow-hidden transition-width flex flex-col flex-1 items-center pb-28">
       <div className="flex items-center justify-center h-10 w-full border-b border-black border-opacity-25">
         <label className="relative inline-flex items-center cursor-pointer justify-between">
-          {/*<input disabled={disableGPTToggle} type="checkbox" 
-                  defaultChecked={pluginConfig.useGPT4} 
-                  onChange={()=>{setPluginConfig({...pluginConfig, useGPT4: !pluginConfig.useGPT4})}}
-                  className="sr-only peer"/>*/}
-          {/* disableGPTToggle ? <span className="mr-3 text-sm">Model version: {pluginConfig.useGPT4 ? "GPT4": "GPT3.5"}</span> : <span className="mr-3 text-sm">Use GPT4</span> */}
-          { /*!disableGPTToggle && <div className="w-10 h-5 bg-gray-200 
-                peer-focus:outline-none 
-                peer-focus:ring-4 
-                peer-focus:ring-blue-300 rounded-full
-                peer-checked:after:translate-x-full
-                peer-checked:after:border-white
-                after:content-[''] after:absolute after:top-[2px] 
-                after:right-[20px] after:bg-white after:border-gray-300 
-                after:border after:rounded-full after:h-4 after:w-4 
-  after:transition-all peer-checked:bg-blue"></div> */}
         </label>
       </div>
       <div className="flex flex-1 w-full overflow-y-auto justify-center">

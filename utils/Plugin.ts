@@ -6,7 +6,7 @@ export interface PluginConfig {
     useSearch: boolean;
     searchEngine: SearchEngineEnum;
     searchResultNum: NumberInRange;
-    //useGPT4: boolean;
+    useDeepSeek: boolean;
 };
 
 export type NumberInRange = 1 | 3 | 5 | 10;
@@ -18,7 +18,7 @@ export enum SearchEngineEnum {
 };
 
 export enum ModelVersion {
-    gpt35 = 'gpt35',
+    deepseekr1 = 'deepseekr1',
     gpt4 = 'gpt4'
 };
 

@@ -112,6 +112,23 @@ export function SideBar() {
         <PluginContainer>
           <WebSearchPluginContainer>
           <label className="relative inline-flex items-center cursor-pointer justify-between">
+              <span className="mr-3 text-sm">Use deepseek</span>
+              <input type="checkbox" 
+                defaultChecked={pluginConfig.useDeepSeek} 
+                onChange={()=>{setPluginConfig({...pluginConfig, useDeepSeek: !pluginConfig.useDeepSeek})}}
+                className="sr-only peer"/>
+              <div className="w-10 h-5 bg-gray-200 
+              peer-focus:outline-none 
+              peer-focus:ring-4 
+              peer-focus:ring-blue-300 rounded-full
+              peer-checked:after:translate-x-full
+              peer-checked:after:border-white
+              after:content-[''] after:absolute after:top-[2px] 
+              after:right-[20px] after:bg-white after:border-gray-300 
+              after:border after:rounded-full after:h-4 after:w-4 
+              after:transition-all peer-checked:bg-blue"></div>
+            </label>
+          <label className="relative inline-flex items-center cursor-pointer justify-between">
               <span className="mr-3 text-sm">Prompt suggestion</span>
               <input type="checkbox" 
                 defaultChecked={pluginConfig.usePromptSuggestion} 

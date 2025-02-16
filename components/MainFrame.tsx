@@ -65,7 +65,7 @@ export function MainFrame() {
   
   const [curSessionIdx, setCurSessionIdx] = useReducer(curIdxReducer, 0)
 
-  const defaultPluginConfig: PluginConfig = {usePromptSuggestion: false, useSearch: false, searchEngine: SearchEngineEnum.Bing, searchResultNum: 3/*, useGPT4: false*/}
+  const defaultPluginConfig: PluginConfig = {usePromptSuggestion: false, useSearch: false, useDeepSeek: false, searchEngine: SearchEngineEnum.Bing, searchResultNum: 3/*, useGPT4: false*/}
   const [pluginConfig, setPluginConfig] = useReducer(pluginCfgReducer, defaultPluginConfig)
   return (    
     <div className="overflow-hidden w-full h-screen relative text-sm">
