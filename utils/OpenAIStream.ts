@@ -12,7 +12,7 @@ export interface ChatGPTMessage {
 }
 
 export interface OpenAIStreamPayload {
-  //model: string
+  model?: string
   messages: ChatGPTMessage[]
   temperature: number
   top_p: number
@@ -41,7 +41,7 @@ export async function OpenAIStream(payload: OpenAIStreamPayload) {
       requestHeaders['OpenAI-Organization'] = process.env.OPENAI_API_ORG
     }
   
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    const res = await fetch(`${process.env.OPENAI_URL ?? 'https://api.openai.com/v1/chat/completions'}`, {
       headers: requestHeaders,
       method: 'POST',
       body: JSON.stringify(payload),
