@@ -38,7 +38,7 @@ const handler = async (req: Request): Promise<Response> => {
     user: body?.user,
   }
 
-  const stream = ModelVersion.gpt4 ? await AzureOAIStream(payload) : await OpenAIStream(payload)
+  const stream = (body?.model == ModelVersion.gpt4) ? await AzureOAIStream(payload) : await OpenAIStream(payload)
   return stream
 }
 export default handler
